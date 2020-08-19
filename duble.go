@@ -11,11 +11,6 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-var appArgs struct {
-	DirName     string `arg:"positional"`
-	ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List diretories under the passed directory"`
-}
-
 func getDirSize(path string) int64 {
 	var size int64
 
@@ -66,6 +61,11 @@ func getHumanizedDirSize(path string) string {
 }
 
 func main() {
+	var appArgs struct {
+		DirName     string `arg:"positional"`
+		ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List diretories under the passed directory"`
+	}
+
 	arg.MustParse(&appArgs)
 
 	if appArgs.DirName != "" {
