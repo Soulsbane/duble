@@ -14,13 +14,14 @@ var appArgs struct {
 	ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List diretories under the passed directory"`
 }
 
-// TODO: Return a list of humanized strings for each directory
-func getDirSize(path string) (int64, error) {
+func getDirSize(path string) int64 {
 	var size int64
+
 	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
+
 		if !info.IsDir() {
 			size += info.Size()
 		}
@@ -28,7 +29,11 @@ func getDirSize(path string) (int64, error) {
 		return err
 	})
 
-	return size, err
+	if err != nil {
+		return 0
+	}
+
+	return size
 }
 
 func main() {
@@ -38,13 +43,8 @@ func main() {
 		if appArgs.ListSubDirs {
 			//listDirs()
 		} else {
-			dirSize, err := getDirSize(appArgs.DirName)
-
-			if err != nil {
-				fmt.Println("Error getting size of directory")
-			} else {
-				fmt.Println(humanize.Bytes(uint64(dirSize)))
-			}
+			dirSize := getDirSize(appArgs.DirName)
+			fmt.Println(humanize.Bytes(uint64(dirSize)))
 		}
 	} else {
 		fmt.Println("Using default")
