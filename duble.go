@@ -43,6 +43,7 @@ func listDirs() {
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
+		return
 	}
 
 	table := termtables.CreateTable()
