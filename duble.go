@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"github.com/alexflint/go-arg"
+	"github.com/brettski/go-termtables"
 	"github.com/dustin/go-humanize"
 )
 
@@ -36,15 +38,40 @@ func getDirSize(path string) int64 {
 	return size
 }
 
+func listDirs() {
+	files, err := ioutil.ReadDir(appArgs.DirName)
+
+	if err != nil {
+		fmt.Println("Failed to read directory")
+	}
+
+	table := termtables.CreateTable()
+	table.AddHeaders("Name", "Size")
+
+	for _, file := range files {
+		if file.IsDir() {
+			table.AddRow(file.Name(), getHumanizedDirSize(file.Name()))
+		}
+	}
+
+	fmt.Println(table.Render())
+}
+
+func getHumanizedDirSize(path string) string {
+	dirSize := getDirSize(path)
+	humanizedStr := humanize.Bytes(uint64(dirSize))
+
+	return humanizedStr
+}
+
 func main() {
 	arg.MustParse(&appArgs)
 
 	if appArgs.DirName != "" {
 		if appArgs.ListSubDirs {
-			//listDirs()
+			listDirs()
 		} else {
-			dirSize := getDirSize(appArgs.DirName)
-			fmt.Println(humanize.Bytes(uint64(dirSize)))
+			fmt.Println(getHumanizedDirSize(appArgs.DirName))
 		}
 	} else {
 		fmt.Println("Using default")
