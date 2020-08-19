@@ -33,6 +33,13 @@ func getDirSize(path string) int64 {
 	return size
 }
 
+func getHumanizedDirSize(path string) string {
+	dirSize := getDirSize(path)
+	humanizedStr := humanize.Bytes(uint64(dirSize))
+
+	return humanizedStr
+}
+
 func listDirs(path string) {
 	files, err := ioutil.ReadDir(path)
 
@@ -51,13 +58,6 @@ func listDirs(path string) {
 	}
 
 	fmt.Println(table.Render())
-}
-
-func getHumanizedDirSize(path string) string {
-	dirSize := getDirSize(path)
-	humanizedStr := humanize.Bytes(uint64(dirSize))
-
-	return humanizedStr
 }
 
 func main() {
