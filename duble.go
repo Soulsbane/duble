@@ -38,8 +38,8 @@ func getDirSize(path string) int64 {
 	return size
 }
 
-func listDirs() {
-	files, err := ioutil.ReadDir(appArgs.DirName)
+func listDirs(path string) {
+	files, err := ioutil.ReadDir(path)
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
@@ -70,12 +70,13 @@ func main() {
 
 	if appArgs.DirName != "" {
 		if appArgs.ListSubDirs {
-			listDirs()
+			listDirs(appArgs.DirName)
 		} else {
 			fmt.Println(getHumanizedDirSize(appArgs.DirName))
 		}
 	} else {
-		fmt.Println("Using default")
+		path, _ := os.Getwd()
+		listDirs(path)
 	}
 
 }
