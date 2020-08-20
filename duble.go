@@ -34,7 +34,7 @@ func getDirSize(path string) int64 {
 	return size
 }
 
-func getHumanizedDirSize(path string) string {
+func getHumanizedSize(path string) string {
 	dirSize := getDirSize(path)
 	humanizedStr := humanize.Bytes(uint64(dirSize))
 
@@ -54,7 +54,7 @@ func listDirs(dirPath string) {
 
 	for _, file := range files {
 		if file.IsDir() {
-			table.AddRow(file.Name(), getHumanizedDirSize(path.Join(dirPath, file.Name())))
+			table.AddRow(file.Name(), getHumanizedSize(path.Join(dirPath, file.Name())))
 		}
 	}
 
@@ -73,7 +73,7 @@ func main() {
 		if appArgs.ListSubDirs {
 			listDirs(appArgs.DirName)
 		} else {
-			fmt.Println(getHumanizedDirSize(appArgs.DirName))
+			fmt.Println(getHumanizedSize(appArgs.DirName))
 		}
 	} else {
 		path, _ := os.Getwd()
