@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/alexflint/go-arg"
@@ -40,8 +41,8 @@ func getHumanizedDirSize(path string) string {
 	return humanizedStr
 }
 
-func listDirs(path string) {
-	files, err := ioutil.ReadDir(path)
+func listDirs(dirPath string) {
+	files, err := ioutil.ReadDir(dirPath)
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
@@ -53,7 +54,7 @@ func listDirs(path string) {
 
 	for _, file := range files {
 		if file.IsDir() {
-			table.AddRow(file.Name(), getHumanizedDirSize(file.Name()))
+			table.AddRow(file.Name(), getHumanizedDirSize(path.Join(dirPath, file.Name())))
 		}
 	}
 
