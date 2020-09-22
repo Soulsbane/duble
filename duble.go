@@ -64,7 +64,7 @@ func listDirs(dirPath string) {
 func main() {
 	var appArgs struct {
 		DirName     string `arg:"positional"`
-		ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List diretories under the passed directory"`
+		ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List directories under the passed directory."`
 	}
 
 	arg.MustParse(&appArgs)
