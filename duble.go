@@ -12,6 +12,7 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
+// Add total file sizes at the end of the table
 func getDirSize(path string) int64 {
 	var size int64
 
@@ -34,15 +35,14 @@ func getDirSize(path string) int64 {
 	return size
 }
 
-func getHumanizedSize(path string) string {
-	dirSize := getDirSize(path)
-	humanizedStr := humanize.Bytes(uint64(dirSize))
-
+func getHumanizedSize(size int64) string {
+	humanizedStr := humanize.Bytes(uint64(size))
 	return humanizedStr
 }
 
 func listDirs(dirPath string) {
 	files, err := ioutil.ReadDir(dirPath)
+	var totalSize int64
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
@@ -54,10 +54,14 @@ func listDirs(dirPath string) {
 
 	for _, file := range files {
 		if file.IsDir() {
-			table.AddRow(file.Name(), getHumanizedSize(path.Join(dirPath, file.Name())))
+			dirSize := getDirSize(path.Join(dirPath, file.Name()))
+			totalSize = totalSize + dirSize
+			table.AddRow(file.Name(), getHumanizedSize(dirSize))
 		}
 	}
 
+	table.AddSeparator()
+	table.AddRow("TOTAL", getHumanizedSize(totalSize))
 	fmt.Println(table.Render())
 }
 
@@ -73,7 +77,8 @@ func main() {
 		if appArgs.ListSubDirs {
 			listDirs(appArgs.DirName)
 		} else {
-			fmt.Println(getHumanizedSize(appArgs.DirName))
+			dirSize := getDirSize(appArgs.DirName)
+			fmt.Println(getHumanizedSize(dirSize))
 		}
 	} else {
 		path, _ := os.Getwd()
