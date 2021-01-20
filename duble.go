@@ -12,7 +12,6 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-// Add total file sizes at the end of the table
 func getDirSize(path string) int64 {
 	var size int64
 
