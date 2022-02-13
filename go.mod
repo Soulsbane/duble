@@ -6,5 +6,4 @@ require (
 	github.com/alexflint/go-arg v1.3.0
 	github.com/brettski/go-termtables v0.0.0-20190907034855-12ddd59af020
 	github.com/dustin/go-humanize v1.0.0
-	github.com/emirpasic/gods v1.12.0 // indirect
 )
