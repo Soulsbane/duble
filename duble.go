@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 
 	"github.com/alexflint/go-arg"
-	"github.com/brettski/go-termtables"
 	"github.com/dustin/go-humanize"
+	"github.com/jedib0t/go-pretty/v6/table"
 )
 
 func getDirSize(path string) int64 {
@@ -48,20 +48,21 @@ func listDirs(dirPath string) {
 		return
 	}
 
-	table := termtables.CreateTable()
-	table.AddHeaders("Name", "Size")
+	dirDataTable := table.NewWriter()
+	dirDataTable.SetOutputMirror(os.Stdout)
+	dirDataTable.AppendHeader(table.Row{"Name", "Size"})
 
 	for _, file := range files {
 		if file.IsDir() {
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
 			totalSize = totalSize + dirSize
-			table.AddRow(file.Name(), getHumanizedSize(dirSize))
+			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(dirSize)})
 		}
 	}
 
-	table.AddSeparator()
-	table.AddRow("TOTAL", getHumanizedSize(totalSize))
-	fmt.Println(table.Render())
+	dirDataTable.AppendSeparator()
+	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(totalSize)})
+	dirDataTable.Render()
 }
 
 func main() {
@@ -83,5 +84,4 @@ func main() {
 		path, _ := os.Getwd()
 		listDirs(path)
 	}
-
 }
