@@ -5,31 +5,30 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"path/filepath"
 
 	"github.com/alexflint/go-arg"
 	"github.com/dustin/go-humanize"
 	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/saracen/walker"
 )
 
 func getDirSize(path string) int64 {
 	var size int64
 
-	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
+	walkFn := func(path string, info os.FileInfo) error {
+		size += info.Size()
+		return nil
+	}
+
+	errorCallbackOption := walker.WithErrorCallback(func(pathname string, err error) error {
+		if os.IsPermission(err) {
+			return nil // INFO: Ignore permission errors
 		}
 
-		if !info.IsDir() {
-			size += info.Size()
-		}
-
-		return err
+		return err // INFO: Stop on all other errors
 	})
 
-	if err != nil {
-		return 0
-	}
+	walker.Walk(path, walkFn, errorCallbackOption)
 
 	return size
 }
@@ -39,7 +38,31 @@ func getHumanizedSize(size int64) string {
 	return humanizedStr
 }
 
-func listDirs(dirPath string) {
+func listDir(dirPath string) {
+	files, err := ioutil.ReadDir(dirPath)
+	var dirSize int64
+
+	if err != nil {
+		fmt.Println("Failed to read directory")
+	}
+
+	dirDataTable := table.NewWriter()
+	dirDataTable.SetOutputMirror(os.Stdout)
+	dirDataTable.AppendHeader(table.Row{"Name", "Size"})
+
+	for _, file := range files {
+		if !file.IsDir() {
+			dirSize += file.Size()
+			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(dirSize)})
+		}
+	}
+
+	dirDataTable.AppendSeparator()
+	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(dirSize)})
+	dirDataTable.Render()
+}
+
+func listDirs(dirPath string, skipDir bool) {
 	files, err := ioutil.ReadDir(dirPath)
 	var totalSize int64
 
@@ -71,17 +94,18 @@ func main() {
 		ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List directories under the passed directory."`
 	}
 
+	path := appArgs.DirName
+
+	if path == "" {
+		path, _ = os.Getwd()
+	}
+
 	arg.MustParse(&appArgs)
 
-	if appArgs.DirName != "" {
-		if appArgs.ListSubDirs {
-			listDirs(appArgs.DirName)
-		} else {
-			dirSize := getDirSize(appArgs.DirName)
-			fmt.Println(getHumanizedSize(dirSize))
-		}
+	if appArgs.ListSubDirs {
+		fmt.Println("Using --list version")
+		listDirs(path, false)
 	} else {
-		path, _ := os.Getwd()
-		listDirs(path)
+		listDir(path)
 	}
 }
