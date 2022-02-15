@@ -53,7 +53,7 @@ func listDir(dirPath string) {
 	for _, file := range files {
 		if !file.IsDir() {
 			dirSize += file.Size()
-			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(dirSize)})
+			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(file.Size())})
 		}
 	}
 
