@@ -62,9 +62,10 @@ func listDir(dirPath string) {
 	dirDataTable.Render()
 }
 
-func listDirs(dirPath string, skipDir bool) {
+func listDirs(dirPath string) { // Maybe option for directories only
 	files, err := ioutil.ReadDir(dirPath)
 	var totalSize int64
+	var rootDirSize int64
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
@@ -80,9 +81,12 @@ func listDirs(dirPath string, skipDir bool) {
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
 			totalSize = totalSize + dirSize
 			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(dirSize)})
+		} else {
+			rootDirSize = rootDirSize + file.Size()
 		}
 	}
 
+	dirDataTable.AppendRow(table.Row{"Root Directory", getHumanizedSize(rootDirSize)})
 	dirDataTable.AppendSeparator()
 	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(totalSize)})
 	dirDataTable.Render()
@@ -104,7 +108,7 @@ func main() {
 
 	if appArgs.ListSubDirs {
 		fmt.Println("Using --list version")
-		listDirs(path, false)
+		listDirs(path)
 	} else {
 		listDir(path)
 	}
