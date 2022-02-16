@@ -93,11 +93,7 @@ func listDirs(dirPath string) { // Maybe option for directories only
 }
 
 func main() {
-	var appArgs struct {
-		DirName     string `arg:"positional"`
-		ListSubDirs bool   `arg:"-l, --list" default:"false" help:"List directories under the passed directory."`
-	}
-
+	var appArgs args
 	path := appArgs.DirName
 
 	if path == "" {
