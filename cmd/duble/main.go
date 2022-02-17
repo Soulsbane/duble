@@ -102,10 +102,9 @@ func main() {
 
 	arg.MustParse(&appArgs)
 
-	if appArgs.ListSubDirs {
-		fmt.Println("Using --list version")
-		listDirs(path)
-	} else {
+	if appArgs.ListRootOnly {
 		listDir(path)
+	} else {
+		listDirs(path)
 	}
 }
