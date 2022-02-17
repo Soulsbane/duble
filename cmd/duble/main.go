@@ -59,6 +59,7 @@ func listDir(dirPath string) {
 
 	dirDataTable.AppendSeparator()
 	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(dirSize)})
+	dirDataTable.SetStyle(table.StyleColoredBlackOnYellowWhite)
 	dirDataTable.Render()
 }
 
@@ -89,6 +90,9 @@ func listDirs(dirPath string) { // Maybe option for directories only
 	dirDataTable.AppendRow(table.Row{"Root Directory", getHumanizedSize(rootDirSize)})
 	dirDataTable.AppendSeparator()
 	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(totalSize)})
+	//dirDataTable.SetStyle(table.StyleColoredBlackOnCyanWhite)
+	//dirDataTable.SetStyle(table.StyleColoredBlackOnGreenWhite)
+	dirDataTable.SetStyle(table.StyleColoredBlackOnYellowWhite)
 	dirDataTable.Render()
 }
 
