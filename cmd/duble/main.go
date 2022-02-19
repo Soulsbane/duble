@@ -75,7 +75,7 @@ func listDir(dirPath string) {
 	outputTable(dirs, totalSize)
 }
 
-func listDirs(dirPath string) { // Maybe option for directories only
+func listDirs(dirPath string) {
 	var dirs = map[string]int64{}
 	var totalSize int64
 	var rootDirSize int64
