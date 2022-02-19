@@ -38,62 +38,67 @@ func getHumanizedSize(size int64) string {
 	return humanizedStr
 }
 
+func outputTable(dirs map[string]int64, totalSize int64) {
+	dirDataTable := table.NewWriter()
+	dirDataTable.SetOutputMirror(os.Stdout)
+	dirDataTable.AppendHeader(table.Row{"Name", "Size"})
+
+	if len(dirs) > 0 {
+		for dirName, dirSize := range dirs {
+			dirDataTable.AppendRow(table.Row{dirName, getHumanizedSize(dirSize)})
+		}
+	}
+
+	dirDataTable.AppendSeparator()
+	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(totalSize)})
+	dirDataTable.SetStyle(table.StyleColoredBlackOnYellowWhite)
+	dirDataTable.Render()
+}
+
 func listDir(dirPath string) {
+	var dirs = map[string]int64{}
+	var totalSize int64
+
 	files, err := ioutil.ReadDir(dirPath)
-	var dirSize int64
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
 	}
 
-	dirDataTable := table.NewWriter()
-	dirDataTable.SetOutputMirror(os.Stdout)
-	dirDataTable.AppendHeader(table.Row{"Name", "Size"})
-
 	for _, file := range files {
 		if !file.IsDir() {
-			dirSize += file.Size()
-			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(file.Size())})
+			totalSize += file.Size()
+			dirs[file.Name()] = file.Size()
 		}
 	}
 
-	dirDataTable.AppendSeparator()
-	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(dirSize)})
-	dirDataTable.SetStyle(table.StyleColoredBlackOnYellowWhite)
-	dirDataTable.Render()
+	outputTable(dirs, totalSize)
 }
 
 func listDirs(dirPath string) { // Maybe option for directories only
-	files, err := ioutil.ReadDir(dirPath)
+	var dirs = map[string]int64{}
 	var totalSize int64
 	var rootDirSize int64
+
+	files, err := ioutil.ReadDir(dirPath)
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
 		return
 	}
 
-	dirDataTable := table.NewWriter()
-	dirDataTable.SetOutputMirror(os.Stdout)
-	dirDataTable.AppendHeader(table.Row{"Name", "Size"})
-
 	for _, file := range files {
 		if file.IsDir() {
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
 			totalSize = totalSize + dirSize
-			dirDataTable.AppendRow(table.Row{file.Name(), getHumanizedSize(dirSize)})
+			dirs[file.Name()] = file.Size()
 		} else {
 			rootDirSize = rootDirSize + file.Size()
 		}
 	}
 
-	dirDataTable.AppendRow(table.Row{"Root Directory", getHumanizedSize(rootDirSize)})
-	dirDataTable.AppendSeparator()
-	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(totalSize)})
-	//dirDataTable.SetStyle(table.StyleColoredBlackOnCyanWhite)
-	//dirDataTable.SetStyle(table.StyleColoredBlackOnGreenWhite)
-	dirDataTable.SetStyle(table.StyleColoredBlackOnYellowWhite)
-	dirDataTable.Render()
+	dirs["Root Directory"] = rootDirSize
+	outputTable(dirs, totalSize)
 }
 
 func main() {
