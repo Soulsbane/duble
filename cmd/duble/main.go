@@ -112,7 +112,7 @@ func main() {
 
 	arg.MustParse(&appArgs)
 
-	if appArgs.ListRootOnly {
+	if appArgs.ListRootFilesOnly {
 		listDir(path)
 	} else {
 		listDirs(path)
