@@ -90,10 +90,10 @@ func listDirs(dirPath string) {
 	for _, file := range files {
 		if file.IsDir() {
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
-			totalSize = totalSize + dirSize
+			totalSize += dirSize
 			dirs[file.Name()] = dirSize
 		} else {
-			rootDirSize = rootDirSize + file.Size()
+			rootDirSize += file.Size()
 		}
 	}
 
