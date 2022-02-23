@@ -34,7 +34,8 @@ func getDirSize(path string) int64 {
 }
 
 func getHumanizedSize(size int64) string {
-	humanizedStr := humanize.Bytes(uint64(size))
+	humanizedStr := humanize.Bytes(uint64(size)) // SI size.
+	//humanizedStr := humanize.IBytes(uint64(size)) // IEC size.
 	return humanizedStr
 }
 
