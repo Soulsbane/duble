@@ -10,6 +10,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/saracen/walker"
+	hidden "github.com/tobychui/goHidden"
 )
 
 func getDirSize(path string) int64 {
@@ -56,7 +57,7 @@ func outputTable(dirs map[string]int64, totalSize int64) {
 	dirDataTable.Render()
 }
 
-func listDir(dirPath string) {
+func listDir(dirPath string, showHidden bool) {
 	var dirs = map[string]int64{}
 	var totalSize int64
 
@@ -68,15 +69,23 @@ func listDir(dirPath string) {
 
 	for _, file := range files {
 		if !file.IsDir() {
+			isHidden, _ := hidden.IsHidden(file.Name(), false)
 			totalSize += file.Size()
-			dirs[file.Name()] = file.Size()
+
+			if isHidden {
+				if showHidden {
+					dirs[file.Name()] = file.Size()
+				}
+			} else {
+				dirs[file.Name()] = file.Size()
+			}
 		}
 	}
 
 	outputTable(dirs, totalSize)
 }
 
-func listDirs(dirPath string) {
+func listDirs(dirPath string, showHidden bool) {
 	var dirs = map[string]int64{}
 	var totalSize int64
 	var rootDirSize int64
@@ -90,9 +99,17 @@ func listDirs(dirPath string) {
 
 	for _, file := range files {
 		if file.IsDir() {
+			isHidden, _ := hidden.IsHidden(file.Name(), false)
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
 			totalSize += dirSize
-			dirs[file.Name()] = dirSize
+
+			if isHidden {
+				if showHidden {
+					dirs[file.Name()] = dirSize
+				}
+			} else {
+				dirs[file.Name()] = dirSize
+			}
 		} else {
 			rootDirSize += file.Size()
 		}
@@ -113,8 +130,8 @@ func main() {
 	arg.MustParse(&appArgs)
 
 	if appArgs.ListRootFilesOnly {
-		listDir(path)
+		listDir(path, appArgs.ListAll)
 	} else {
-		listDirs(path)
+		listDirs(path, appArgs.ListAll)
 	}
 }
