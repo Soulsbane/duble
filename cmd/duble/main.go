@@ -53,7 +53,7 @@ func outputTable(dirs map[string]int64, totalSize int64) {
 
 	dirDataTable.AppendSeparator()
 	dirDataTable.AppendFooter(table.Row{"TOTAL", getHumanizedSize(totalSize)})
-	dirDataTable.SetStyle(table.StyleColoredBlackOnYellowWhite)
+	dirDataTable.SetStyle(table.StyleRounded)
 	dirDataTable.Render()
 }
 
