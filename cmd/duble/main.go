@@ -60,7 +60,7 @@ func outputTable(dirs map[string]int64, totalSize int64) {
 func listDir(dirPath string, showHidden bool) {
 	var dirs = map[string]int64{}
 	var totalSize int64
-	fmt.Println("listDir", dirPath)
+
 	files, err := ioutil.ReadDir(dirPath)
 
 	if err != nil {
