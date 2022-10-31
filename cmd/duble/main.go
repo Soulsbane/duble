@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 
@@ -61,23 +60,25 @@ func listDir(dirPath string, showHidden bool) {
 	var dirs = map[string]int64{}
 	var totalSize int64
 
-	files, err := ioutil.ReadDir(dirPath)
+	files, err := os.ReadDir(dirPath)
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
 	}
 
 	for _, file := range files {
+		info, _ := file.Info()
+
 		if !file.IsDir() {
 			isHidden, _ := hidden.IsHidden(file.Name(), false)
-			totalSize += file.Size()
+			totalSize += info.Size()
 
 			if isHidden {
 				if showHidden {
-					dirs[file.Name()] = file.Size()
+					dirs[file.Name()] = info.Size()
 				}
 			} else {
-				dirs[file.Name()] = file.Size()
+				dirs[file.Name()] = info.Size()
 			}
 		}
 	}
@@ -90,7 +91,7 @@ func listDirs(dirPath string, showHidden bool) {
 	var totalSize int64
 	var rootDirSize int64
 
-	files, err := ioutil.ReadDir(dirPath)
+	files, err := os.ReadDir(dirPath)
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
@@ -98,6 +99,8 @@ func listDirs(dirPath string, showHidden bool) {
 	}
 
 	for _, file := range files {
+		info, _ := file.Info()
+
 		if file.IsDir() {
 			isHidden, _ := hidden.IsHidden(file.Name(), false)
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
@@ -112,8 +115,8 @@ func listDirs(dirPath string, showHidden bool) {
 				totalSize += dirSize
 			}
 		} else {
-			rootDirSize += file.Size()
-			totalSize += file.Size()
+			rootDirSize += info.Size()
+			totalSize += info.Size()
 		}
 	}
 
