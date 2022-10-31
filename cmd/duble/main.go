@@ -101,17 +101,19 @@ func listDirs(dirPath string, showHidden bool) {
 		if file.IsDir() {
 			isHidden, _ := hidden.IsHidden(file.Name(), false)
 			dirSize := getDirSize(path.Join(dirPath, file.Name()))
-			totalSize += dirSize
 
 			if isHidden {
 				if showHidden {
 					dirs[file.Name()] = dirSize
+					totalSize += dirSize
 				}
 			} else {
 				dirs[file.Name()] = dirSize
+				totalSize += dirSize
 			}
 		} else {
 			rootDirSize += file.Size()
+			totalSize += file.Size()
 		}
 	}
 
