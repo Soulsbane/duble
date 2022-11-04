@@ -125,7 +125,7 @@ func listDirs(dirPath string, showHidden bool) {
 }
 
 func main() {
-	var appArgs args
+	var appArgs ProgramArgs
 
 	arg.MustParse(&appArgs)
 	path := appArgs.DirName
