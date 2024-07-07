@@ -12,6 +12,11 @@ import (
 	hidden "github.com/tobychui/goHidden"
 )
 
+type DirInfo struct {
+	Name string
+	Size int64
+}
+
 func getDirSize(path string) int64 {
 	var size int64
 
@@ -39,14 +44,14 @@ func getHumanizedSize(size int64) string {
 	return humanizedStr
 }
 
-func outputTable(dirs map[string]int64, totalSize int64) {
+func outputTable(dirs []DirInfo, totalSize int64) {
 	dirDataTable := table.NewWriter()
 	dirDataTable.SetOutputMirror(os.Stdout)
 	dirDataTable.AppendHeader(table.Row{"Name", "Size"})
 
 	if len(dirs) > 0 {
-		for dirName, dirSize := range dirs {
-			dirDataTable.AppendRow(table.Row{dirName, getHumanizedSize(dirSize)})
+		for _, dirInfo := range dirs {
+			dirDataTable.AppendRow(table.Row{dirInfo.Name, getHumanizedSize(dirInfo.Size)})
 		}
 	}
 
@@ -57,7 +62,7 @@ func outputTable(dirs map[string]int64, totalSize int64) {
 }
 
 func listDir(dirPath string, showHidden bool) {
-	var dirs = map[string]int64{}
+	var dirs []DirInfo
 	var totalSize int64
 
 	files, err := os.ReadDir(dirPath)
@@ -75,10 +80,12 @@ func listDir(dirPath string, showHidden bool) {
 
 			if isHidden {
 				if showHidden {
-					dirs[file.Name()] = info.Size()
+					dirInfo := DirInfo{file.Name(), info.Size()}
+					dirs = append(dirs, dirInfo)
 				}
 			} else {
-				dirs[file.Name()] = info.Size()
+				dirInfo := DirInfo{file.Name(), info.Size()}
+				dirs = append(dirs, dirInfo)
 			}
 		}
 	}
@@ -87,7 +94,7 @@ func listDir(dirPath string, showHidden bool) {
 }
 
 func listDirs(dirPath string, showHidden bool) {
-	var dirs = map[string]int64{}
+	var dirs []DirInfo
 	var totalSize int64
 	var rootDirSize int64
 
@@ -107,11 +114,15 @@ func listDirs(dirPath string, showHidden bool) {
 
 			if isHidden {
 				if showHidden {
-					dirs[file.Name()] = dirSize
+					dirInfo := DirInfo{file.Name(), dirSize}
+
+					dirs = append(dirs, dirInfo)
 					totalSize += dirSize
 				}
 			} else {
-				dirs[file.Name()] = dirSize
+				dirInfo := DirInfo{file.Name(), dirSize}
+
+				dirs = append(dirs, dirInfo)
 				totalSize += dirSize
 			}
 		} else {
@@ -120,7 +131,7 @@ func listDirs(dirPath string, showHidden bool) {
 		}
 	}
 
-	dirs["Root Directory"] = rootDirSize
+	dirs = append(dirs, DirInfo{"Root Directory", rootDirSize})
 	outputTable(dirs, totalSize)
 }
 
