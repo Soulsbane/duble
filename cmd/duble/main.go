@@ -61,7 +61,7 @@ func outputTable(dirs []DirInfo, totalSize int64) {
 	dirDataTable.Render()
 }
 
-func listDir(dirPath string, showHidden bool) {
+func getListOfFiles(dirPath string, showHidden bool) ([]DirInfo, int64) {
 	var dirs []DirInfo
 	var totalSize int64
 
@@ -90,10 +90,10 @@ func listDir(dirPath string, showHidden bool) {
 		}
 	}
 
-	outputTable(dirs, totalSize)
+	return dirs, totalSize
 }
 
-func listDirs(dirPath string, showHidden bool) {
+func getListOfDirs(dirPath string, showHidden bool) ([]DirInfo, int64) {
 	var dirs []DirInfo
 	var totalSize int64
 	var rootDirSize int64
@@ -102,7 +102,6 @@ func listDirs(dirPath string, showHidden bool) {
 
 	if err != nil {
 		fmt.Println("Failed to read directory")
-		return
 	}
 
 	for _, file := range files {
@@ -132,7 +131,7 @@ func listDirs(dirPath string, showHidden bool) {
 	}
 
 	dirs = append(dirs, DirInfo{"Root Directory", rootDirSize})
-	outputTable(dirs, totalSize)
+	return dirs, totalSize
 }
 
 func main() {
@@ -146,8 +145,10 @@ func main() {
 	}
 
 	if appArgs.ListRootFilesOnly {
-		listDir(path, appArgs.ListAll)
+		dirs, totalSize := getListOfFiles(path, appArgs.ListAll)
+		outputTable(dirs, totalSize)
 	} else {
-		listDirs(path, appArgs.ListAll)
+		dirs, totalSize := getListOfDirs(path, appArgs.ListAll)
+		outputTable(dirs, totalSize)
 	}
 }
