@@ -138,17 +138,17 @@ func main() {
 	var appArgs ProgramArgs
 
 	arg.MustParse(&appArgs)
-	path := appArgs.DirName
+	dirName := appArgs.DirName
 
-	if path == "" {
-		path, _ = os.Getwd()
+	if dirName == "" {
+		dirName, _ = os.Getwd()
 	}
 
 	if appArgs.ListRootFilesOnly {
-		dirs, totalSize := getListOfFiles(path, appArgs.ListAll)
+		dirs, totalSize := getListOfFiles(dirName, appArgs.ListAll)
 		outputTable(dirs, totalSize)
 	} else {
-		dirs, totalSize := getListOfDirs(path, appArgs.ListAll)
+		dirs, totalSize := getListOfDirs(dirName, appArgs.ListAll)
 		outputTable(dirs, totalSize)
 	}
 }
