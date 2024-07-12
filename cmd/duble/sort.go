@@ -2,28 +2,36 @@ package main
 
 import "sort"
 
-func sortDirList(dirs []DirInfo, sortType string, descending bool) []DirInfo {
+func sortDirList(dirs []DirInfo, sortType string, sortOrder string) []DirInfo {
 	switch sortType {
 	case "size":
-		return sortBySize(dirs)
+		return sortBySize(dirs, sortOrder)
 	case "name":
-		return sortByName(dirs)
+		return sortByName(dirs, sortOrder)
 	default:
-		return sortBySize(dirs)
+		return sortBySize(dirs, sortOrder)
 	}
 }
 
-func sortByName(dirs []DirInfo) []DirInfo {
+func sortByName(dirs []DirInfo, sortOrder string) []DirInfo {
 	sort.Slice(dirs, func(i, j int) bool {
-		return dirs[i].Name < dirs[j].Name
+		if sortOrder == "descending" {
+			return dirs[i].Name > dirs[j].Name
+		} else {
+			return dirs[i].Name < dirs[j].Name
+		}
 	})
 
 	return dirs
 }
 
-func sortBySize(dirs []DirInfo) []DirInfo {
+func sortBySize(dirs []DirInfo, sortOrder string) []DirInfo {
 	sort.Slice(dirs, func(i, j int) bool {
-		return dirs[i].Size > dirs[j].Size
+		if sortOrder == "descending" {
+			return dirs[i].Size > dirs[j].Size
+		} else {
+			return dirs[i].Size < dirs[j].Size
+		}
 	})
 
 	return dirs

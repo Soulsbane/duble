@@ -146,9 +146,9 @@ func main() {
 
 	if appArgs.ListRootFilesOnly {
 		dirs, totalSize := getListOfFiles(dirName, appArgs.ListAll)
-		outputTable(sortDirList(dirs, appArgs.SortBy, appArgs.Descending), totalSize)
+		outputTable(sortDirList(dirs, appArgs.SortBy, appArgs.SortOrder), totalSize)
 	} else {
 		dirs, totalSize := getListOfDirs(dirName, appArgs.ListAll)
-		outputTable(sortDirList(dirs, appArgs.SortBy, appArgs.Descending), totalSize)
+		outputTable(sortDirList(dirs, appArgs.SortBy, appArgs.SortOrder), totalSize)
 	}
 }
