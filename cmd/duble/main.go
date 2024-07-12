@@ -137,11 +137,19 @@ func getListOfDirs(dirPath string, showHidden bool) ([]DirInfo, int64) {
 func main() {
 	var appArgs ProgramArgs
 
-	arg.MustParse(&appArgs)
+	p := arg.MustParse(&appArgs)
 	dirName := appArgs.DirName
 
 	if dirName == "" {
 		dirName, _ = os.Getwd()
+	}
+
+	if appArgs.SortBy != "size" && appArgs.SortBy != "name" {
+		p.Fail("--sort-by value must be either 'size' or 'name'")
+	}
+
+	if appArgs.SortOrder != "ascending" && appArgs.SortOrder != "descending" {
+		p.Fail("--sort-order value must be either 'ascending' or 'descending'")
 	}
 
 	if appArgs.ListRootFilesOnly {
