@@ -11,3 +11,7 @@ type ProgramArgs struct {
 func (args ProgramArgs) Description() string {
 	return "Duble shows the size of each directory below user specified directory or current working directory if none specified."
 }
+
+func (args ProgramArgs) Epilogue() string {
+	return "For Duble project updates and bug reports, visit https://github.com/Soulsbane/duble"
+}
