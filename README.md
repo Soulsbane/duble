@@ -1,6 +1,6 @@
 # Description
 
-Shows the size of each directory below user specified directory or current working directory.
+Shows the size of each directory below user specified directory or current working directory if none specified.
 
 ## Usage
 
