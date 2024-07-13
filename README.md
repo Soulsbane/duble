@@ -19,6 +19,8 @@ Sort by size or name. [default: size]
 --sort-order SORT-ORDER, -o SORT-ORDER
 Sort in descending or ascending order. [default: descending]
 --help, -h             display this help and exit
+
+For Duble project updates and bug reports, visit https://github.com/Soulsbane/duble
 ```
 
 ## Example Terminal Output
