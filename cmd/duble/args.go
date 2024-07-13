@@ -7,3 +7,7 @@ type ProgramArgs struct {
 	SortBy            string `arg:"-s, --sort-by" default:"size" help:"Sort by size or name."`
 	SortOrder         string `arg:"-o, --sort-order" default:"descending" help:"Sort in descending or ascending order."`
 }
+
+func (args ProgramArgs) Description() string {
+	return "Duble shows the size of each directory below user specified directory or current working directory if none specified."
+}
