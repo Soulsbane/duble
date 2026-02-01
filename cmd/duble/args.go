@@ -9,7 +9,7 @@ type ProgramArgs struct {
 }
 
 func (args ProgramArgs) Description() string {
-	return "Duble shows the size of each directory below user specified directory or current working directory if none specified."
+	return "Duble shows the size of each directory below user specified directory or current working directory if none is specified."
 }
 
 func (args ProgramArgs) Epilogue() string {
